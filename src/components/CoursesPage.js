@@ -1,42 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { getCourses } from "../api/courseApi";
+import CourseList from "./CourseList";
 
-class CoursesPage extends React.Component {
-  state = {
-    courses: [],
-  };
+function CoursesPage() {
+  const [courses, setCourses] = useState([]);
 
-  componentDidMount() {
-    getCourses().then((courses) => this.setState({ courses: courses }));
-  }
+  useEffect(() => {
+    getCourses().then((_courses) => setCourses(_courses));
+  }, []);
 
-  renderRow(course) {
-    return (
-      <tr key={course.id}>
-        <td>{course.title}</td>
-        <td>{course.authorId}</td>
-        <td>{course.category}</td>
-      </tr>
-    );
-  }
-
-  render() {
-    return (
-      <>
-        <h2>courses</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Author Id</th>
-              <th>Category</th>
-            </tr>
-          </thead>
-          <tbody>{this.state.courses.map(this.renderRow)}</tbody>
-        </table>
-      </>
-    );
-  }
+  return (
+    <>
+      <h2>courses</h2>
+      <CourseList courses={courses} />
+    </>
+  );
 }
-
+/*NOTE: creating separate components for logic and markup can make your
+components easier to maintain and reuse*/
 export default CoursesPage;
