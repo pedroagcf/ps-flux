@@ -4,7 +4,7 @@ import courseStore from "../stores/courseStore";
 import { toast } from "react-toastify";
 import * as courseActions from "../actions/courseActions";
 
-const ManageCoursePage = props => {
+const ManageCoursePage = (props) => {
   const [errors, setErrors] = useState({});
   const [courses, setCourses] = useState(courseStore.getCourses());
   const [course, setCourse] = useState({
@@ -12,19 +12,16 @@ const ManageCoursePage = props => {
     slug: "",
     title: "",
     authorId: null,
-    category: ""
+    category: "",
   });
 
   useEffect(() => {
-    courseStore.addChangeListener(onChange);
-    const slug = props.match.params.slug; // from the path `/courses/:slug`
-    if (courses.length === 0) {
-      courseActions.loadCourses();
-    } else if (slug) {
+    const slug = props.match.params.slug;
+
+    if (slug) {
       setCourse(courseStore.getCourseBySlug(slug));
     }
-    return () => courseStore.removeChangeListener(onChange);
-  }, [courses.length, props.match.params.slug]);
+  }, [props.match.params.slug]);
 
   function onChange() {
     setCourses(courseStore.getCourses());
@@ -33,7 +30,7 @@ const ManageCoursePage = props => {
   function handleChange({ target }) {
     setCourse({
       ...course,
-      [target.name]: target.value
+      [target.name]: target.value,
     });
   }
 
