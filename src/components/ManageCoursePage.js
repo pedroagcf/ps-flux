@@ -3,10 +3,12 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 import CourseForm from "./CourseForm";
-import * as courseApi from "../api/courseApi";
+import courseStore from "../stores/courseStore";
+import * as courseActions from "../actions/courseActions";
 
 const ManageCoursePage = (props) => {
   const [errors, setErrors] = useState({});
+  const [courses, setCourses] = useState(courseStore.getCourses()); //goal: load all the courses if they haven't been loaded yet
   const [course, setCourse] = useState({
     id: null,
     slug: "",
@@ -16,11 +18,19 @@ const ManageCoursePage = (props) => {
   });
 
   useEffect(() => {
+    courseStore.addChangeListener(onChange);
     const slug = props.match.params.slug; // from the path `/courses/:slug`
-    if (slug) {
-      courseApi.getCourseBySlug(slug).then((_course) => setCourse(_course));
+    if (courses.length === 0) {
+      courseActions.loadCourses();
+    } else if (slug) {
+      setCourse(courseStore.getCoursesBySlug(slug));
     }
-  }, [props.match.params.slug]);
+    return () => courseStore.removeChangeListener(onChange);
+  }, [courses.length, props.match.params.slug]);
+
+  function onChange() {
+    setCourses(courseStore.getCourses());
+  }
 
   function handleChange(event) {
     const { target } = event;
@@ -46,7 +56,7 @@ const ManageCoursePage = (props) => {
   function handleSubmit(event) {
     event.preventDefault();
     if (!formsIsValid()) return;
-    courseApi.saveCourse(course).then(() => {
+    courseActions.saveCourse(course).then(() => {
       props.history.push("/courses");
       toast.success("course saved!");
     });

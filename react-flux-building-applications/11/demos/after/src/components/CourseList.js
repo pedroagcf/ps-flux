@@ -14,7 +14,7 @@ function CourseList(props) {
         </tr>
       </thead>
       <tbody>
-        {props.courses.map(course => {
+        {props.courses.map((course) => {
           return (
             <tr key={course.id}>
               <td>
@@ -47,9 +47,9 @@ CourseList.propTypes = {
       id: PropTypes.number.isRequired,
       title: PropTypes.string.isRequired,
       authorId: PropTypes.number.isRequired,
-      category: PropTypes.string.isRequired
+      category: PropTypes.string.isRequired,
     })
-  ).isRequired
+  ).isRequired,
 };
 
 export default CourseList;
